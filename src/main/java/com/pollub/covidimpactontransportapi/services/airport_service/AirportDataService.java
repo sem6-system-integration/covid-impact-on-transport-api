@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pollub.covidimpactontransportapi.dto.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.entities.AirportData;
-import com.pollub.covidimpactontransportapi.repositories.airports_repository.IAirportDataRepository;
+import com.pollub.covidimpactontransportapi.repositories.IAirportDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class AirportDataService implements IAirportDataService {
         this.airportDataRepository = airportDataRepository;
     }
 
-    private int saveAirportsToDb() throws IOException, InterruptedException {
+    private void fetchAirportsToDb() throws IOException, InterruptedException {
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(URI.create(API_URL))
                 .GET()
@@ -35,7 +35,8 @@ public class AirportDataService implements IAirportDataService {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         var json = response.body();
         var objectMapper = new ObjectMapper();
-        var airportData = objectMapper.readValue(json, new TypeReference<Map<String, Map<String, String>>>(){}).values();
+        var airportData = objectMapper.readValue(json, new TypeReference<Map<String, Map<String, String>>>() {
+        }).values();
 
         var airports = new ArrayList<AirportData>();
         for (Map<String, String> entry : airportData) {
@@ -44,15 +45,14 @@ public class AirportDataService implements IAirportDataService {
         }
 
         airportDataRepository.saveAll(airports);
-        return airports.size();
     }
 
     @Override
     public AirportDataResponse getAirportsByCountryCode(String countryCode) throws IOException, InterruptedException {
-        List<AirportData> airports = airportDataRepository.findIcaoByCountryCode(countryCode);
+        List<AirportData> airports = airportDataRepository.findAllByCountryCode(countryCode);
         if (airports.isEmpty()) {
-            saveAirportsToDb();
-            airports = airportDataRepository.findIcaoByCountryCode(countryCode);
+            fetchAirportsToDb();
+            airports = airportDataRepository.findAllByCountryCode(countryCode);
         }
 
         List<String> icaoList = airports.stream().map(AirportData::getIcao).collect(Collectors.toList());

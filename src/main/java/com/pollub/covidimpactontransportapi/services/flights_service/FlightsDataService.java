@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pollub.covidimpactontransportapi.dto.MonthlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.dto.YearlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.entities.FlightsData;
-import com.pollub.covidimpactontransportapi.repositories.flights_repository.IFlightsDataRepository;
+import com.pollub.covidimpactontransportapi.repositories.IFlightsDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,11 +26,11 @@ public class FlightsDataService implements IFlightsDataService {
     }
 
     @Override
-    public Integer saveFlightsDataInMonthInYearByAirportCodeToDb(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
+    public void fetchFlightsDataByAirportCodeInMonthAndInYearToDb(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
         long beginDateEpoch = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + month + "-" + year).getTime() / 1000;
         // check if beginDateEpoch is in the future
         if (beginDateEpoch > System.currentTimeMillis() / 1000)
-            return 0;
+            return;
 
         long endDateEpoch = new SimpleDateFormat("dd-MM-yyyy").parse("31-" + month + "-" + year).getTime() / 1000;
         // cap end date to current date
@@ -60,14 +60,13 @@ public class FlightsDataService implements IFlightsDataService {
         }
 
         flightsDataRepository.save(new FlightsData(airportCode, year, month, flightsCount));
-        return flightsCount;
     }
 
     @Override
-    public MonthlyFlightsDataResponse getFlightsDataByAirportCodeInYearInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
+    public MonthlyFlightsDataResponse getFlightsDataByAirportCodeInYearAndInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
         var flightsData = flightsDataRepository.findByAirportCodeAndYearAndMonth(airportCode, year, month);
         if (flightsData == null) {
-            saveFlightsDataInMonthInYearByAirportCodeToDb(airportCode, year, month);
+            fetchFlightsDataByAirportCodeInMonthAndInYearToDb(airportCode, year, month);
             flightsData = flightsDataRepository.findByAirportCodeAndYearAndMonth(airportCode, year, month);
             if (flightsData == null)
                 return new MonthlyFlightsDataResponse(airportCode, year, month, 0);
@@ -80,7 +79,7 @@ public class FlightsDataService implements IFlightsDataService {
     public YearlyFlightsDataResponse getFlightsDataByAirportCodeInYear(String airportCode, int year) throws IOException, InterruptedException, ParseException {
         var flightsCountInYear = 0;
         for (int month = 1; month <= 12; month++) {
-            var flightsCount= getFlightsDataByAirportCodeInYearInMonth(airportCode, year, month).getFlightsCount();
+            var flightsCount = getFlightsDataByAirportCodeInYearAndInMonth(airportCode, year, month).getFlightsCount();
             flightsCountInYear += flightsCount;
         }
         return new YearlyFlightsDataResponse(airportCode, year, flightsCountInYear);

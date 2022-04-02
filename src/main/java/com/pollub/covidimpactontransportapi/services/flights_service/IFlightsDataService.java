@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface IFlightsDataService {
-    Integer saveFlightsDataInMonthInYearByAirportCodeToDb(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException;
+    void fetchFlightsDataByAirportCodeInMonthAndInYearToDb(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException;
 
-    MonthlyFlightsDataResponse getFlightsDataByAirportCodeInYearInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException;
+    MonthlyFlightsDataResponse getFlightsDataByAirportCodeInYearAndInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException;
 
     YearlyFlightsDataResponse getFlightsDataByAirportCodeInYear(String airportCode, int year) throws IOException, InterruptedException, ParseException;
 }

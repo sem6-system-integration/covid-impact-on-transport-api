@@ -5,7 +5,7 @@ import com.pollub.covidimpactontransportapi.dto.DailyCovidData;
 import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.entities.CovidData;
-import com.pollub.covidimpactontransportapi.repositories.covid_repository.ICovidDataRepository;
+import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public int fetchCovidDataFromCountryToDb(String countryNameOrCountryCode) throws IOException, InterruptedException {
+    public void fetchCovidDataByCountryToDb(String countryNameOrCountryCode) throws IOException, InterruptedException {
         var uri = URI.create(API_URL + "dayone/country/" + countryNameOrCountryCode);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(uri)
@@ -82,13 +82,12 @@ public class CovidDataService implements ICovidDataService {
         }
 
         covidDataRepository.saveAllAndFlush(covidDataList);
-        return dailyCovidData.size();
     }
 
     @Override
-    public YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) throws IOException, InterruptedException {
+    public YearlyCovidDataResponse getCovidDataByCountryInYear(String country, int year) throws IOException, InterruptedException {
         country = country.toUpperCase();
-        fetchCovidDataFromCountryToDb(country);
+        fetchCovidDataByCountryToDb(country);
 
         var covidDataList = covidDataRepository.findAllByCountryNameOrCountryCodeAndYear(country, year);
         if (covidDataList == null || covidDataList.isEmpty()) {
@@ -101,11 +100,11 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) throws IOException, InterruptedException {
+    public MonthlyCovidDataResponse getCovidDataByCountryInMonthAndInYear(String country, int year, int month) throws IOException, InterruptedException {
         country = country.toUpperCase();
-        fetchCovidDataFromCountryToDb(country);
+        fetchCovidDataByCountryToDb(country);
 
-        var covidData = covidDataRepository.findFirstByCountryNameOrCountryCodeAndYearAndMonth(country, month, year);
+        var covidData = covidDataRepository.findFirstByCountryNameOrCountryCodeAndYearAndMonth(country, year, month);
         if (covidData == null) {
             return new MonthlyCovidDataResponse(year, month, 0L, 0L);
         }

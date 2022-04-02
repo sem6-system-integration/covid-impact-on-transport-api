@@ -1,16 +1,21 @@
 package com.pollub.covidimpactontransportapi.entities;
 
+import com.pollub.covidimpactontransportapi.entities.id_classes.FlightsDataId;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
 @IdClass(FlightsDataId.class)
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlightsData {
     @Id
     private String airportCode;
@@ -22,11 +27,4 @@ public class FlightsData {
     private int month;
 
     private int flightsCount;
-
-    public FlightsData(String airportCode, int year, int month, int flightsCount) {
-        this.airportCode = airportCode;
-        this.year = year;
-        this.month = month;
-        this.flightsCount = flightsCount;
-    }
 }

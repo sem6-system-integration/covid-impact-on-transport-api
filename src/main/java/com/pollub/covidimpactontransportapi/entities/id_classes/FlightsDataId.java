@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.entities;
+package com.pollub.covidimpactontransportapi.entities.id_classes;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

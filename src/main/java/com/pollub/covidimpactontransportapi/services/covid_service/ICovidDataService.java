@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface ICovidDataService {
-    int fetchCovidDataFromCountryToDb(String country) throws IOException, InterruptedException;
+    void fetchCovidDataByCountryToDb(String country) throws IOException, InterruptedException;
 
-    YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) throws ParseException, IOException, InterruptedException;
+    YearlyCovidDataResponse getCovidDataByCountryInYear(String country, int year) throws ParseException, IOException, InterruptedException;
 
-    MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) throws ParseException, IOException, InterruptedException;
+    MonthlyCovidDataResponse getCovidDataByCountryInMonthAndInYear(String country, int year, int month) throws ParseException, IOException, InterruptedException;
 }

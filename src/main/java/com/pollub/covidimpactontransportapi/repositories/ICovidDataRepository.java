@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.repositories.covid_repository;
+package com.pollub.covidimpactontransportapi.repositories;
 
 import com.pollub.covidimpactontransportapi.entities.CovidData;
 import org.springframework.data.jpa.repository.JpaRepository;

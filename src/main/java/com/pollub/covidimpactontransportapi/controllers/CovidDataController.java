@@ -24,7 +24,7 @@ public class CovidDataController {
     @GetMapping("/country/{country}")
     @Operation(summary = "Get covid data for a country. Accepts country code and country name.")
     public ResponseEntity<Integer> saveCovidDataByCountryToDb(@PathVariable String country) throws IOException, InterruptedException {
-        var numberOfSavedData = covidDataService.saveCovidDataByCountryToDb(country);
+        var numberOfSavedData = covidDataService.fetchCovidDataFromCountryToDb(country);
         return new ResponseEntity<>(numberOfSavedData, HttpStatus.OK);
     }
 

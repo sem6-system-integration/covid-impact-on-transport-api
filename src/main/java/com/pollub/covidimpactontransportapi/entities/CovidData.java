@@ -22,6 +22,6 @@ public class CovidData {
     private String countryCode;
     private Integer year;
     private Integer month;
-    private Long cases;
+    private Long confirmed;
     private Long deaths;
 }

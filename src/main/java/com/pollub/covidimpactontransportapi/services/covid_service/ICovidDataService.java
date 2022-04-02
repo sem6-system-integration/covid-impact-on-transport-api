@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface ICovidDataService {
-    int saveCovidDataByCountryToDb(String country) throws IOException, InterruptedException;
+    int fetchCovidDataFromCountryToDb(String country) throws IOException, InterruptedException;
 
     YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) throws ParseException, IOException, InterruptedException;
 

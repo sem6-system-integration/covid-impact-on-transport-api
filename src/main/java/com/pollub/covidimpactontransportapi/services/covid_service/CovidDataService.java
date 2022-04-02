@@ -14,7 +14,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.ParseException;
 import java.util.*;
 
 @Service
@@ -27,8 +26,8 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public int saveCovidDataByCountryToDb(String country) throws IOException, InterruptedException {
-        var uri = URI.create(API_URL + "dayone/country/" + country);
+    public int fetchCovidDataFromCountryToDb(String countryNameOrCountryCode) throws IOException, InterruptedException {
+        var uri = URI.create(API_URL + "dayone/country/" + countryNameOrCountryCode);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(uri)
                 .GET()
@@ -39,7 +38,7 @@ public class CovidDataService implements ICovidDataService {
 
         var objectMapper = new ObjectMapper();
         List<DailyCovidData> dailyCovidData = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, DailyCovidData.class));
-        country = dailyCovidData.get(0).getCountry().toUpperCase();
+        var country = dailyCovidData.get(0).getCountry().toUpperCase();
         var countryCode = dailyCovidData.get(0).getCountryCode().toUpperCase();
 
         // Map<Year, Map<Month, Pair<Cases, Deaths>>>
@@ -78,7 +77,7 @@ public class CovidDataService implements ICovidDataService {
         }
 
         for (int i = covidDataList.size() - 1; i > 0; i--) {
-            covidDataList.get(i).setCases(covidDataList.get(i).getCases() - covidDataList.get(i - 1).getCases());
+            covidDataList.get(i).setConfirmed(covidDataList.get(i).getConfirmed() - covidDataList.get(i - 1).getConfirmed());
             covidDataList.get(i).setDeaths(covidDataList.get(i).getDeaths() - covidDataList.get(i - 1).getDeaths());
         }
 
@@ -87,64 +86,26 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) throws ParseException, IOException, InterruptedException {
-//        country = country.toUpperCase();
-//        saveCovidDataByCountryToDb(country);
-//        var beginDate = new SimpleDateFormat("dd-MM-yyyy").parse("01-01-" + year);
-//        var endDate = new SimpleDateFormat("dd-MM-yyyy").parse("31-12-" + year);
-//
-//        // assume country is country name
-//        var beginData = covidDataRepository.findFirstByCountryAndDateBetweenOrderByDateAsc(country, beginDate, endDate);
-//        var endData = covidDataRepository.findFirstByCountryAndDateBetweenOrderByDateDesc(country, beginDate, endDate);
-//
-//        // assume country is country code
-//        if (beginData == null || endData == null) {
-//            beginData = covidDataRepository.findFirstByCountryCodeAndDateBetweenOrderByDateAsc(country, beginDate, endDate);
-//            endData = covidDataRepository.findFirstByCountryCodeAndDateBetweenOrderByDateDesc(country, beginDate, endDate);
-//        }
-//
-//        // begin date probably before covid
-//        if (beginData == null && endData != null)
-//            return new YearlyCovidDataResponse(year, endData.getConfirmed(), endData.getDeaths());
-//
-//        // end date probably after covid
-//        if (endData == null)
-//            return new YearlyCovidDataResponse(year, 0L, 0L);
-//
-//        var confirmed = endData.getConfirmed() - beginData.getConfirmed();
-//        var deaths = endData.getDeaths() - beginData.getDeaths();
-//        return new YearlyCovidDataResponse(year, confirmed, deaths);
-        return null;
+    public YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) {
+        country = country.toUpperCase();
+        var covidDataList = covidDataRepository.findAllByCountryNameOrCountryCodeAndYear(country, year);
+        if (covidDataList == null || covidDataList.isEmpty()) {
+            return new YearlyCovidDataResponse(year, 0L, 0L);
+        }
+
+        var confirmed = covidDataList.stream().mapToLong(CovidData::getConfirmed).sum();
+        var deaths = covidDataList.stream().mapToLong(CovidData::getDeaths).sum();
+        return new YearlyCovidDataResponse(year, confirmed, deaths);
     }
 
     @Override
-    public MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) throws ParseException, IOException, InterruptedException {
-//        country = country.toUpperCase();
-//        saveCovidDataByCountryToDb(country);
-//        var beginDate = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + month + "-" + year);
-//        var endDate = new SimpleDateFormat("dd-MM-yyyy").parse("31-" + month + "-" + year);
-//
-//        // assume country is country name
-//        var beginData = covidDataRepository.findFirstByCountryAndDateBetweenOrderByDateAsc(country, beginDate, endDate);
-//        var endData = covidDataRepository.findFirstByCountryAndDateBetweenOrderByDateDesc(country, beginDate, endDate);
-//
-//        // assume country is country code
-//        if (beginData == null || endData == null) {
-//            beginData = covidDataRepository.findFirstByCountryCodeAndDateBetweenOrderByDateAsc(country, beginDate, endDate);
-//            endData = covidDataRepository.findFirstByCountryCodeAndDateBetweenOrderByDateDesc(country, beginDate, endDate);
-//        }
-//
-//        // begin date probably before covid
-//        if (beginData == null && endData != null)
-//            return new MonthlyCovidDataResponse(year, month, endData.getConfirmed(), endData.getDeaths());
-//
-//        // end date probably after covid
-//        if (endData == null)
-//            return new MonthlyCovidDataResponse(year, month, 0L, 0L);
-//
-//        var confirmed = endData.getConfirmed() - beginData.getConfirmed();
-//        var deaths = endData.getDeaths() - beginData.getDeaths();
-//        return new MonthlyCovidDataResponse(year, month, confirmed, deaths);
-        return null;
+    public MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) {
+        country = country.toUpperCase();
+        var covidData = covidDataRepository.findFirstByCountryNameOrCountryCodeAndYearAndMonth(country, month, year);
+        if (covidData == null) {
+            return new MonthlyCovidDataResponse(year, month, 0L, 0L);
+        }
+
+        return new MonthlyCovidDataResponse(year, month, covidData.getConfirmed(), covidData.getDeaths());
     }
 }

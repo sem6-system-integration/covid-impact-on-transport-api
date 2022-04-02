@@ -1,6 +1,7 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.CovidDataResponse;
+import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.services.covid_service.ICovidDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,10 @@ import java.io.IOException;
 import java.text.ParseException;
 
 @RestController
-public class CovidController {
+public class CovidDataController {
     private final ICovidDataService covidDataService;
 
-    public CovidController(ICovidDataService covidDataService) {
+    public CovidDataController(ICovidDataService covidDataService) {
         this.covidDataService = covidDataService;
     }
 
@@ -28,16 +29,18 @@ public class CovidController {
     }
 
     @GetMapping("/country/{country}/year/{year}")
-    public ResponseEntity<CovidDataResponse> getCovidCasesInYearByCountry(@PathVariable String country,
-                                                                          @PathVariable Integer year) throws ParseException, IOException, InterruptedException {
+    @Operation(summary = "Get covid data for a country in a year. Accepts country code and country name.")
+    public ResponseEntity<YearlyCovidDataResponse> getCovidCasesInYearByCountry(@PathVariable String country,
+                                                                                @PathVariable Integer year) throws ParseException, IOException, InterruptedException {
         var covidDataResponse = covidDataService.getCovidCasesInYearByCountry(country, year);
         return new ResponseEntity<>(covidDataResponse, HttpStatus.OK);
     }
 
     @GetMapping("/country/{country}/year/{year}/month/{month}")
-    public ResponseEntity<CovidDataResponse> getCovidDataInMonthInYearByCountry(@PathVariable String country,
-                                                                                @PathVariable Integer year,
-                                                                                @PathVariable Integer month) throws ParseException, IOException, InterruptedException {
+    @Operation(summary = "Get covid data for a country in a year and month. Accepts country code and country name.")
+    public ResponseEntity<MonthlyCovidDataResponse> getCovidDataInMonthInYearByCountry(@PathVariable String country,
+                                                                                       @PathVariable Integer year,
+                                                                                       @PathVariable Integer month) throws ParseException, IOException, InterruptedException {
         var covidDataResponse = covidDataService.getCovidDataInMonthInYearByCountry(country, year, month);
         return new ResponseEntity<>(covidDataResponse, HttpStatus.OK);
     }

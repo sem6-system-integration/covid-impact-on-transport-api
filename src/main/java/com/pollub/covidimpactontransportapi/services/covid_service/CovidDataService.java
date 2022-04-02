@@ -41,7 +41,7 @@ public class CovidDataService implements ICovidDataService {
         var country = dailyCovidData.get(0).getCountry().toUpperCase();
         var countryCode = dailyCovidData.get(0).getCountryCode().toUpperCase();
 
-        // Map<Year, Map<Month, Pair<Cases, Deaths>>>
+        // Map<Year, Map<Month, Pair<Confirmed, Deaths>>>
         Map<Integer, Map<Integer, Pair<Long, Long>>> map = new HashMap<>();
         for (DailyCovidData data : dailyCovidData) {
             var date = data.getDate();
@@ -69,9 +69,9 @@ public class CovidDataService implements ICovidDataService {
             for (var monthEntry : monthMap.entrySet()) {
                 var month = monthEntry.getKey();
                 var pair = monthEntry.getValue();
-                var cases = pair.getFirst();
+                var confirmed = pair.getFirst();
                 var deaths = pair.getSecond();
-                var covidData = new CovidData(null, country, countryCode, year, month, cases, deaths);
+                var covidData = new CovidData(countryCode, country, year, month, confirmed, deaths);
                 covidDataList.add(covidData);
             }
         }
@@ -86,8 +86,10 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) {
+    public YearlyCovidDataResponse getCovidCasesInYearByCountry(String country, int year) throws IOException, InterruptedException {
         country = country.toUpperCase();
+        fetchCovidDataFromCountryToDb(country);
+
         var covidDataList = covidDataRepository.findAllByCountryNameOrCountryCodeAndYear(country, year);
         if (covidDataList == null || covidDataList.isEmpty()) {
             return new YearlyCovidDataResponse(year, 0L, 0L);
@@ -99,8 +101,10 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) {
+    public MonthlyCovidDataResponse getCovidDataInMonthInYearByCountry(String country, int year, int month) throws IOException, InterruptedException {
         country = country.toUpperCase();
+        fetchCovidDataFromCountryToDb(country);
+
         var covidData = covidDataRepository.findFirstByCountryNameOrCountryCodeAndYearAndMonth(country, month, year);
         if (covidData == null) {
             return new MonthlyCovidDataResponse(year, month, 0L, 0L);

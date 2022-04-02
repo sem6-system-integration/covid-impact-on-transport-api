@@ -6,22 +6,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
+@IdClass(CovidDataId.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CovidData {
     @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    private Long id;
-    private String country;
     private String countryCode;
+
+    private String country;
+
+    @Id
     private Integer year;
+
+    @Id
     private Integer month;
+
     private Long confirmed;
     private Long deaths;
 }

@@ -21,12 +21,12 @@ public class CovidDataController {
         this.covidDataService = covidDataService;
     }
 
-    @GetMapping("/country/{country}")
-    @Operation(summary = "Get covid data for a country. Accepts country code and country name.")
-    public ResponseEntity<Integer> saveCovidDataByCountryToDb(@PathVariable String country) throws IOException, InterruptedException {
-        var numberOfSavedData = covidDataService.fetchCovidDataFromCountryToDb(country);
-        return new ResponseEntity<>(numberOfSavedData, HttpStatus.OK);
-    }
+//    @GetMapping("/country/{country}")
+//    @Operation(summary = "Get covid data for a country. Accepts country code and country name.")
+//    public ResponseEntity<Integer> fetchCovidDataFromCountryToDb(@PathVariable String country) throws IOException, InterruptedException {
+//        var numberOfSavedData = covidDataService.fetchCovidDataFromCountryToDb(country);
+//        return new ResponseEntity<>(numberOfSavedData, HttpStatus.OK);
+//    }
 
     @GetMapping("/country/{country}/year/{year}")
     @Operation(summary = "Get covid data for a country in a year. Accepts country code and country name.")

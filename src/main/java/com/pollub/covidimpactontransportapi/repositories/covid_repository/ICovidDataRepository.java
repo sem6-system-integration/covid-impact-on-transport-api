@@ -2,17 +2,16 @@ package com.pollub.covidimpactontransportapi.repositories.covid_repository;
 
 import com.pollub.covidimpactontransportapi.entities.CovidData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface ICovidDataRepository extends JpaRepository<CovidData, Long> {
-    CovidData findFirstByCountryAndDateBetweenOrderByDateAsc(String country, Date date, Date date2);
+    @Query(value = "SELECT * FROM covid_data WHERE (country = ?1 OR country_code = ?1) AND year = ?2 AND month = ?3", nativeQuery = true)
+    CovidData findFirstByCountryNameOrCountryCodeAndYearAndMonth(String country, int year, int month);
 
-    CovidData findFirstByCountryAndDateBetweenOrderByDateDesc(String country, Date date, Date date2);
-
-    CovidData findFirstByCountryCodeAndDateBetweenOrderByDateAsc(String country, Date date, Date date2);
-
-    CovidData findFirstByCountryCodeAndDateBetweenOrderByDateDesc(String country, Date date, Date date2);
+    @Query(value = "SELECT * FROM covid_data WHERE (country = ?1 OR country_code = ?1) AND year = ?2", nativeQuery = true)
+    List<CovidData> findAllByCountryNameOrCountryCodeAndYear(String country, int year);
 }

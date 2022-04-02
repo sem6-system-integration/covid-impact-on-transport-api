@@ -1,5 +1,6 @@
 package com.pollub.covidimpactontransportapi.entities;
 
+import com.pollub.covidimpactontransportapi.entities.id_classes.CovidDataId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

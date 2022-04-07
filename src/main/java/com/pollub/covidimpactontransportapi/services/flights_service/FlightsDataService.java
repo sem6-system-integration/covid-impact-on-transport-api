@@ -27,6 +27,7 @@ public class FlightsDataService implements IFlightsDataService {
 
     @Override
     public void fetchFlightsDataByAirportCodeInMonthAndInYearToDb(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
+        airportCode = airportCode.toUpperCase();
         long beginDateEpoch = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + month + "-" + year).getTime() / 1000;
         // check if beginDateEpoch is in the future
         if (beginDateEpoch > System.currentTimeMillis() / 1000)
@@ -64,6 +65,7 @@ public class FlightsDataService implements IFlightsDataService {
 
     @Override
     public MonthlyFlightsDataResponse getFlightsDataByAirportCodeInYearAndInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
+        airportCode = airportCode.toUpperCase();
         var flightsData = flightsDataRepository.findByAirportCodeAndYearAndMonth(airportCode, year, month);
         if (flightsData == null) {
             fetchFlightsDataByAirportCodeInMonthAndInYearToDb(airportCode, year, month);
@@ -77,6 +79,7 @@ public class FlightsDataService implements IFlightsDataService {
 
     @Override
     public YearlyFlightsDataResponse getFlightsDataByAirportCodeInYear(String airportCode, int year) throws IOException, InterruptedException, ParseException {
+        airportCode = airportCode.toUpperCase();
         var flightsCountInYear = 0;
         for (int month = 1; month <= 12; month++) {
             var flightsCount = getFlightsDataByAirportCodeInYearAndInMonth(airportCode, year, month).getFlightsCount();

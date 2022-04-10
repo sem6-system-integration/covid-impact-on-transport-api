@@ -26,7 +26,7 @@ public class AirportDataService implements IAirportDataService {
         this.airportDataRepository = airportDataRepository;
     }
 
-    private void fetchAirportsToDb() throws IOException, InterruptedException {
+    private void fetchAirportsToDbByCountryCode(String countryCode) throws IOException, InterruptedException {
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(URI.create(API_URL))
                 .GET()
@@ -40,8 +40,10 @@ public class AirportDataService implements IAirportDataService {
 
         var airports = new ArrayList<AirportData>();
         for (Map<String, String> entry : airportData) {
-            var airport = new AirportData(entry.get("icao"), entry.get("country"));
-            airports.add(airport);
+            if (entry.get("country").equals(countryCode)) {
+                var airport = new AirportData(entry.get("icao"), entry.get("country"));
+                airports.add(airport);
+            }
         }
 
         airportDataRepository.saveAll(airports);
@@ -51,7 +53,7 @@ public class AirportDataService implements IAirportDataService {
     public AirportDataResponse getAirportsByCountryCode(String countryCode) throws IOException, InterruptedException {
         List<AirportData> airports = airportDataRepository.findAllByCountryCode(countryCode);
         if (airports.isEmpty()) {
-            fetchAirportsToDb();
+            fetchAirportsToDbByCountryCode(countryCode);
             airports = airportDataRepository.findAllByCountryCode(countryCode);
         }
 

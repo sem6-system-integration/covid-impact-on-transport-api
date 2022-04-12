@@ -31,14 +31,20 @@ public class DatabaseSeeder implements ApplicationRunner {
     }
 
     private void seedRoles() {
-        Role adminRole = new Role("ADMIN");
-        Role userRole = new Role("USER");
-        roleRepository.save(adminRole);
-        roleRepository.save(userRole);
+        if (roleRepository.findByName("ADMIN") == null) {
+            Role adminRole = new Role("ADMIN");
+            roleRepository.save(adminRole);
+        }
+        if (roleRepository.findByName("USER") == null) {
+            Role userRole = new Role("USER");
+            roleRepository.save(userRole);
+        }
         roleRepository.flush();
     }
 
     private void seedAdmin() {
+        if (userRepository.findByUsername("admin").isPresent())
+            return;
         var encodedPassword = passwordEncoder.encode("admin");
         AppUser admin = new AppUser("admin", encodedPassword);
         Role adminRole = roleRepository.findByName("ADMIN");

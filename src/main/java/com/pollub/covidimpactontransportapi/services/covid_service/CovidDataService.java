@@ -6,6 +6,7 @@ import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.entities.CovidData;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
+import com.pollub.covidimpactontransportapi.services.country_service.ICountryService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,9 +23,11 @@ import java.util.List;
 public class CovidDataService implements ICovidDataService {
     private final String API_URL = "https://api.covid19api.com/";
     private final ICovidDataRepository covidDataRepository;
+    private final ICountryService countryService;
 
-    public CovidDataService(ICovidDataRepository covidDataRepository) {
+    public CovidDataService(ICovidDataRepository covidDataRepository, ICountryService countryService) {
         this.covidDataRepository = covidDataRepository;
+        this.countryService = countryService;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class CovidDataService implements ICovidDataService {
         }
 
         var country = dailyCovidData.get(0).getCountry().toUpperCase();
-        var countryCode = dailyCovidData.get(0).getCountryCode().toUpperCase();
+        var countryCode = countryService.getCountryByName(country).getCountryCode();
 
         var prevMonthTotalConfirmed = 0L;
         var prevMonthTotalDeaths = 0L;
@@ -60,7 +63,7 @@ public class CovidDataService implements ICovidDataService {
 
             if (day == calendar.getActualMaximum(Calendar.DATE)) {
                 var confirmed = Math.max(data.getConfirmed() - prevMonthTotalConfirmed, 0);
-                var deaths = Math.max(data.getDeaths() - prevMonthTotalDeaths,  0);
+                var deaths = Math.max(data.getDeaths() - prevMonthTotalDeaths, 0);
                 prevMonthTotalConfirmed = data.getConfirmed();
                 prevMonthTotalDeaths = data.getDeaths();
                 covidDataList.add(new CovidData(countryCode, country, year, month, confirmed, deaths));

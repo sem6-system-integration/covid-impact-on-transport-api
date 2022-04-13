@@ -6,7 +6,6 @@ import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.entities.CovidData;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,7 +13,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class CovidDataService implements ICovidDataService {
@@ -27,7 +29,7 @@ public class CovidDataService implements ICovidDataService {
 
     @Override
     public void fetchCovidDataByCountryToDb(String countryNameOrCountryCode) throws IOException, InterruptedException {
-        var uri = URI.create(API_URL + "dayone/country/" + countryNameOrCountryCode);
+        var uri = URI.create(API_URL + "total/dayone/country/" + countryNameOrCountryCode);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(uri)
                 .GET()
@@ -38,47 +40,31 @@ public class CovidDataService implements ICovidDataService {
 
         var objectMapper = new ObjectMapper();
         List<DailyCovidData> dailyCovidData = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, DailyCovidData.class));
+        if (dailyCovidData.size() == 0) {
+           return;
+        }
+
         var country = dailyCovidData.get(0).getCountry().toUpperCase();
         var countryCode = dailyCovidData.get(0).getCountryCode().toUpperCase();
 
-        // Map<Year, Map<Month, Pair<Confirmed, Deaths>>>
-        Map<Integer, Map<Integer, Pair<Long, Long>>> map = new HashMap<>();
+        var prevMonthTotalConfirmed = 0L;
+        var prevMonthTotalDeaths = 0L;
+        List<CovidData> covidDataList = new ArrayList<>();
         for (DailyCovidData data : dailyCovidData) {
-            var date = data.getDate();
+            Date date = data.getDate();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             var year = calendar.get(Calendar.YEAR);
             var month = calendar.get(Calendar.MONTH) + 1;
-            var cases = data.getConfirmed();
-            var deaths = data.getDeaths();
+            var day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            if (map.containsKey(year)) {
-                var monthMap = map.get(year);
-                monthMap.put(month, Pair.of(cases, deaths));
-            } else {
-                var monthMap = new HashMap<Integer, Pair<Long, Long>>();
-                monthMap.put(month, Pair.of(cases, deaths));
-                map.put(year, monthMap);
+            if (day == calendar.getActualMaximum(Calendar.DATE) || dailyCovidData.indexOf(data) == dailyCovidData.size() - 1) {
+                var confirmed = data.getConfirmed() - prevMonthTotalConfirmed;
+                var deaths = data.getDeaths() - prevMonthTotalDeaths;
+                covidDataList.add(new CovidData(countryCode, country, year, month, confirmed, deaths));
+                prevMonthTotalConfirmed = data.getConfirmed();
+                prevMonthTotalDeaths = data.getDeaths();
             }
-        }
-
-        List<CovidData> covidDataList = new ArrayList<>();
-        for (var entry : map.entrySet()) {
-            var year = entry.getKey();
-            var monthMap = entry.getValue();
-            for (var monthEntry : monthMap.entrySet()) {
-                var month = monthEntry.getKey();
-                var pair = monthEntry.getValue();
-                var confirmed = pair.getFirst();
-                var deaths = pair.getSecond();
-                var covidData = new CovidData(countryCode, country, year, month, confirmed, deaths);
-                covidDataList.add(covidData);
-            }
-        }
-
-        for (int i = covidDataList.size() - 1; i > 0; i--) {
-            covidDataList.get(i).setConfirmed(covidDataList.get(i).getConfirmed() - covidDataList.get(i - 1).getConfirmed());
-            covidDataList.get(i).setDeaths(covidDataList.get(i).getDeaths() - covidDataList.get(i - 1).getDeaths());
         }
 
         covidDataRepository.saveAllAndFlush(covidDataList);

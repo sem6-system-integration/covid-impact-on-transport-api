@@ -41,7 +41,7 @@ public class CovidDataService implements ICovidDataService {
         var objectMapper = new ObjectMapper();
         List<DailyCovidData> dailyCovidData = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, DailyCovidData.class));
         if (dailyCovidData.size() == 0) {
-           return;
+            return;
         }
 
         var country = dailyCovidData.get(0).getCountry().toUpperCase();
@@ -58,12 +58,12 @@ public class CovidDataService implements ICovidDataService {
             var month = calendar.get(Calendar.MONTH) + 1;
             var day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            if (day == calendar.getActualMaximum(Calendar.DATE) || dailyCovidData.indexOf(data) == dailyCovidData.size() - 1) {
-                var confirmed = data.getConfirmed() - prevMonthTotalConfirmed;
-                var deaths = data.getDeaths() - prevMonthTotalDeaths;
-                covidDataList.add(new CovidData(countryCode, country, year, month, confirmed, deaths));
+            if (day == calendar.getActualMaximum(Calendar.DATE)) {
+                var confirmed = Math.max(data.getConfirmed() - prevMonthTotalConfirmed, 0);
+                var deaths = Math.max(data.getDeaths() - prevMonthTotalDeaths,  0);
                 prevMonthTotalConfirmed = data.getConfirmed();
                 prevMonthTotalDeaths = data.getDeaths();
+                covidDataList.add(new CovidData(countryCode, country, year, month, confirmed, deaths));
             }
         }
 

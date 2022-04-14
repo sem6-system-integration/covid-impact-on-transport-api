@@ -25,6 +25,7 @@ public class CountryController {
     }
 
     @GetMapping("/")
+    @Operation(summary = "Get all available countries")
     public ResponseEntity<List<CountryResponse>> getAllCountries() throws IOException, InterruptedException {
         var countryResponseList = countryService.getAllCountries();
         return new ResponseEntity<>(countryResponseList, HttpStatus.OK);

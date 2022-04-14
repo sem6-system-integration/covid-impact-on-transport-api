@@ -24,24 +24,24 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "Get all available countries")
     public ResponseEntity<List<CountryResponse>> getAllCountries() throws IOException, InterruptedException {
         var countryResponseList = countryService.getAllCountries();
         return new ResponseEntity<>(countryResponseList, HttpStatus.OK);
     }
 
-    @GetMapping("countryCode/{countryCode}")
+    @GetMapping("code/{code}")
     @Operation(summary = "Get country by country code")
-    public ResponseEntity<CountryResponse> getCountryByCountryCode(@PathVariable String countryCode) throws IOException, InterruptedException {
-        var countryResponse = countryService.getCountryByCode(countryCode);
+    public ResponseEntity<CountryResponse> getCountryByCode(@PathVariable String code) throws IOException, InterruptedException {
+        var countryResponse = countryService.getCountryByCode(code);
         return new ResponseEntity<>(countryResponse, HttpStatus.OK);
     }
 
-    @GetMapping("countryName/{countryName}")
+    @GetMapping("name/{name}")
     @Operation(summary = "Get country by country name")
-    public ResponseEntity<CountryResponse> getCountryByCountryName(@PathVariable String countryName) throws IOException, InterruptedException {
-        var countryResponse = countryService.getCountryByName(countryName);
+    public ResponseEntity<CountryResponse> getCountryByName(@PathVariable String name) throws IOException, InterruptedException {
+        var countryResponse = countryService.getCountryByName(name);
         return new ResponseEntity<>(countryResponse, HttpStatus.OK);
     }
 }

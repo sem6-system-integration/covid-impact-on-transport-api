@@ -69,12 +69,11 @@ public class CountryService  implements ICountryService {
 
     @Override
     public List<CountryResponse> getAllCountries() throws IOException, InterruptedException {
-        var countries = countryRepository.findAll();
+        var countries = countryRepository.findAllByOrderByName();
         if (countries.isEmpty()) {
             fetchCountriesToDb();
-            countries = countryRepository.findAll();
+            countries = countryRepository.findAllByOrderByName();
         }
         return countries.stream().map(country -> new CountryResponse(country.getCode(), country.getName())).collect(java.util.stream.Collectors.toList());
     }
-
 }

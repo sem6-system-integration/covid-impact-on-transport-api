@@ -39,9 +39,11 @@ public class FlightsDataService implements IFlightsDataService {
 
         final var secondsInWeek = 604800;
         var flightsCount = 0;
+        var week = 1;
         for (long dateEpoch = beginDateEpoch + secondsInWeek;
              dateEpoch < endDateEpoch;
              beginDateEpoch = dateEpoch, dateEpoch = Long.min(dateEpoch + secondsInWeek, endDateEpoch)) {
+            System.out.println("Fetching week: " + week);
             var uri = URI.create(API_URL +
                     "api/flights/arrival?airport=" + airportCode +
                     "&begin=" + beginDateEpoch +
@@ -53,13 +55,16 @@ public class FlightsDataService implements IFlightsDataService {
                     .header("accept", "application/json")
                     .build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Fetched week: " + week++);
 
             var json = response.body();
             var objectMapper = new ObjectMapper();
             var flights = objectMapper.readValue(json, List.class);
             flightsCount += flights.size();
+            Thread.sleep(50);
         }
 
+        System.out.println("Flights count: " + flightsCount);
         flightsDataRepository.save(new FlightsData(airportCode, year, month, flightsCount));
     }
 

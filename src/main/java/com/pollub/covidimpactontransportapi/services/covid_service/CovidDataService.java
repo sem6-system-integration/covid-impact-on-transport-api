@@ -48,7 +48,7 @@ public class CovidDataService implements ICovidDataService {
         }
 
         var country = dailyCovidData.get(0).getCountry().toUpperCase();
-        var countryCode = countryService.getCountryByName(country).getCountryCode();
+        var countryCode = countryService.getCountryByName(country).getCode();
 
         var prevMonthTotalConfirmed = 0L;
         var prevMonthTotalDeaths = 0L;

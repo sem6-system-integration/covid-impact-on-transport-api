@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ICountryService {
-    CountryResponse getCountryByName(String countryName) throws IOException, InterruptedException;
+    CountryResponse getCountryByName(String name) throws IOException, InterruptedException;
 
-    CountryResponse getCountryByCode(String countryCode) throws IOException, InterruptedException;
+    CountryResponse getCountryByCode(String code) throws IOException, InterruptedException;
 
     List<CountryResponse> getAllCountries() throws IOException, InterruptedException;
 }

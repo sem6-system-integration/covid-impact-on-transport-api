@@ -1,6 +1,6 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.CountryResponse;
+import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 import com.pollub.covidimpactontransportapi.services.country_service.ICountryService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;

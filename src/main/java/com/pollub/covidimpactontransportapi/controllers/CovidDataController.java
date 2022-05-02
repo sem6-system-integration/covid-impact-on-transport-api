@@ -1,7 +1,7 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.services.covid_service.ICovidDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;

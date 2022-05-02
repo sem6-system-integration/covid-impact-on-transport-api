@@ -1,6 +1,6 @@
 package com.pollub.covidimpactontransportapi.services.country_service;
 
-import com.pollub.covidimpactontransportapi.dto.CountryResponse;
+import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 
 import java.io.IOException;
 import java.util.List;

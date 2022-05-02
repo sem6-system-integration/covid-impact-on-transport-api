@@ -1,6 +1,6 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.AirportDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.services.airport_service.IAirportDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;

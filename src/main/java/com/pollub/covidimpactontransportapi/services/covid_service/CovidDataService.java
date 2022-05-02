@@ -1,10 +1,10 @@
 package com.pollub.covidimpactontransportapi.services.covid_service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.dto.DailyCovidData;
-import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.entities.CovidData;
+import com.pollub.covidimpactontransportapi.models.DailyCovidDataDto;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
 import com.pollub.covidimpactontransportapi.services.country_service.ICountryService;
 import org.springframework.stereotype.Service;

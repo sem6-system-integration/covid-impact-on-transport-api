@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.dto;
+package com.pollub.covidimpactontransportapi.models.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class AirportDataResponse {
     private String countryCode;
-    private List<String> icao;
+    private List<String> airportCodes;
 }

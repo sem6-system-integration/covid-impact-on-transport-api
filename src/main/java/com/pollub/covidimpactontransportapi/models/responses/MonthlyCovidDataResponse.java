@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.dto;
+package com.pollub.covidimpactontransportapi.models.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearlyCovidDataResponse {
+public class MonthlyCovidDataResponse {
     private Integer year;
+    private Integer month;
     private Long confirmed;
     private Long deaths;
 }

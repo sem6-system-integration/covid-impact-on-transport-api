@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.dto;
+package com.pollub.covidimpactontransportapi.models.requests;
 
 import lombok.Getter;
 import lombok.Setter;

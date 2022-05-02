@@ -1,9 +1,9 @@
 package com.pollub.covidimpactontransportapi.services.country_service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.dto.CountryDto;
-import com.pollub.covidimpactontransportapi.dto.CountryResponse;
 import com.pollub.covidimpactontransportapi.entities.Country;
+import com.pollub.covidimpactontransportapi.models.CountryDto;
+import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICountryRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.pollub.covidimpactontransportapi.services.covid_service;
 
-import com.pollub.covidimpactontransportapi.dto.MonthlyCovidDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
 
 import java.io.IOException;
 import java.text.ParseException;

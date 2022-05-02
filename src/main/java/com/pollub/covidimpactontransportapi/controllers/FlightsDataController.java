@@ -1,7 +1,7 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.MonthlyFlightsDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyFlightsDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyFlightsDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.services.flights_service.IFlightsDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -27,17 +27,17 @@ public class FlightsDataController {
 
     @GetMapping("{airportCode}/year/{year}/month/{month}")
     @Operation(summary = "Get flights count at a given airport in specified year and month.")
-    public ResponseEntity<MonthlyFlightsDataResponse> getFlightsCountByAirportCodeInYearInMonth(@PathVariable String airportCode,
-                                                                                                @PathVariable int year,
-                                                                                                @PathVariable int month) throws IOException, InterruptedException, ParseException {
+    public ResponseEntity<MonthlyFlightsDataResponse> getFlightCountByAirportCodeInYearInMonth(@PathVariable String airportCode,
+                                                                                               @PathVariable int year,
+                                                                                               @PathVariable int month) throws IOException, InterruptedException, ParseException {
         var flightsDataResponse = flightsDataService.getFlightsDataByAirportCodeInYearAndInMonth(airportCode, year, month);
         return new ResponseEntity<>(flightsDataResponse, HttpStatus.OK);
     }
 
     @GetMapping("{airportCode}/year/{year}")
     @Operation(summary = "Get flights count at a given airport in specified year.")
-    public ResponseEntity<YearlyFlightsDataResponse> getFlightsCountByAirportCodeInYearInMonth(@PathVariable String airportCode,
-                                                                                               @PathVariable int year) throws IOException, InterruptedException, ParseException {
+    public ResponseEntity<YearlyFlightsDataResponse> getFlightCountByAirportCodeInYear(@PathVariable String airportCode,
+                                                                                       @PathVariable int year) throws IOException, InterruptedException, ParseException {
         var flightsDataResponse = flightsDataService.getFlightsDataByAirportCodeInYear(airportCode, year);
         return new ResponseEntity<>(flightsDataResponse, HttpStatus.OK);
     }

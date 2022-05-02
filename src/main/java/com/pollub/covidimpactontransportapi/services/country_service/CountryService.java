@@ -46,17 +46,6 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public CountryResponse getCountryByName(String countryName) throws IOException, InterruptedException {
-        countryName = countryName.toUpperCase();
-        var country = countryRepository.findByName(countryName);
-        if (country == null) {
-            fetchCountriesToDb();
-            country = countryRepository.findByName(countryName);
-        }
-        return new CountryResponse(country.getCode(), country.getName());
-    }
-
-    @Override
     public CountryResponse getCountryByCode(String countryCode) throws IOException, InterruptedException {
         countryCode = countryCode.toUpperCase();
         var country = countryRepository.findByCode(countryCode);

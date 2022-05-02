@@ -6,7 +6,6 @@ import com.pollub.covidimpactontransportapi.models.DailyCovidDataDto;
 import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
-import com.pollub.covidimpactontransportapi.services.country_service.ICountryService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,16 +22,14 @@ import java.util.List;
 public class CovidDataService implements ICovidDataService {
     private final String API_URL = "https://api.covid19api.com/";
     private final ICovidDataRepository covidDataRepository;
-    private final ICountryService countryService;
 
-    public CovidDataService(ICovidDataRepository covidDataRepository, ICountryService countryService) {
+    public CovidDataService(ICovidDataRepository covidDataRepository) {
         this.covidDataRepository = covidDataRepository;
-        this.countryService = countryService;
     }
 
     @Override
-    public void fetchCovidDataByCountryToDb(String countryNameOrCountryCode) throws IOException, InterruptedException {
-        var uri = URI.create(API_URL + "total/dayone/country/" + countryNameOrCountryCode);
+    public void fetchCovidDataByCountryCodeToDb(String countryCode) throws IOException, InterruptedException {
+        var uri = URI.create(API_URL + "total/dayone/country/" + countryCode);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(uri)
                 .GET()
@@ -42,18 +39,15 @@ public class CovidDataService implements ICovidDataService {
         var json = response.body();
 
         var objectMapper = new ObjectMapper();
-        List<DailyCovidData> dailyCovidData = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, DailyCovidData.class));
-        if (dailyCovidData.size() == 0) {
-            return;
-        }
+        List<DailyCovidDataDto> dailyCovidDataDtos = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, DailyCovidDataDto.class));
+        if (dailyCovidDataDtos.size() == 0) return;
 
-        var country = dailyCovidData.get(0).getCountry().toUpperCase();
-        var countryCode = countryService.getCountryByName(country).getCode();
+        var countryName = dailyCovidDataDtos.get(0).getCountryName().toUpperCase();
 
         var prevMonthTotalConfirmed = 0L;
         var prevMonthTotalDeaths = 0L;
         List<CovidData> covidDataList = new ArrayList<>();
-        for (DailyCovidData data : dailyCovidData) {
+        for (DailyCovidDataDto data : dailyCovidDataDtos) {
             Date date = data.getDate();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -66,7 +60,7 @@ public class CovidDataService implements ICovidDataService {
                 var deaths = Math.max(data.getDeaths() - prevMonthTotalDeaths, 0);
                 prevMonthTotalConfirmed = data.getConfirmed();
                 prevMonthTotalDeaths = data.getDeaths();
-                covidDataList.add(new CovidData(countryCode, country, year, month, confirmed, deaths));
+                covidDataList.add(new CovidData(countryCode, countryName, year, month, confirmed, deaths));
             }
         }
 
@@ -74,11 +68,10 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public YearlyCovidDataResponse getCovidDataByCountryInYear(String country, int year) throws IOException, InterruptedException {
-        country = country.toUpperCase();
-        fetchCovidDataByCountryToDb(country);
+    public YearlyCovidDataResponse getCovidDataByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
+        fetchCovidDataByCountryCodeToDb(countryCode);
 
-        var covidDataList = covidDataRepository.findAllByCountryNameOrCountryCodeAndYear(country, year);
+        var covidDataList = covidDataRepository.findAllByCountryCodeAndYear(countryCode, year);
         if (covidDataList == null || covidDataList.isEmpty()) {
             return new YearlyCovidDataResponse(year, 0L, 0L);
         }
@@ -89,14 +82,12 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public MonthlyCovidDataResponse getCovidDataByCountryInMonthAndInYear(String country, int year, int month) throws IOException, InterruptedException {
-        country = country.toUpperCase();
-        fetchCovidDataByCountryToDb(country);
+    public MonthlyCovidDataResponse getCovidDataByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
+        fetchCovidDataByCountryCodeToDb(countryCode);
 
-        var covidData = covidDataRepository.findFirstByCountryNameOrCountryCodeAndYearAndMonth(country, year, month);
-        if (covidData == null) {
+        var covidData = covidDataRepository.findFirstByCountryCodeAndYearAndMonth(countryCode, year, month);
+        if (covidData == null)
             return new MonthlyCovidDataResponse(year, month, 0L, 0L);
-        }
 
         return new MonthlyCovidDataResponse(year, month, covidData.getConfirmed(), covidData.getDeaths());
     }

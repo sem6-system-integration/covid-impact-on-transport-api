@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 @Service
-public class CountryService  implements ICountryService {
+public class CountryService implements ICountryService {
     private final String API_URL = "https://api.covid19api.com/";
     private final ICountryRepository countryRepository;
 

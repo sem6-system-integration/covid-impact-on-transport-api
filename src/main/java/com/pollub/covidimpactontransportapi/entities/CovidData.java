@@ -19,15 +19,11 @@ import javax.persistence.IdClass;
 public class CovidData {
     @Id
     private String countryCode;
-
     private String country;
-
     @Id
     private Integer year;
-
     @Id
     private Integer month;
-
     private Long confirmed;
     private Long deaths;
 }

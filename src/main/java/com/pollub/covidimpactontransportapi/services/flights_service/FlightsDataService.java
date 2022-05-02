@@ -5,13 +5,10 @@ import com.pollub.covidimpactontransportapi.entities.FlightsData;
 import com.pollub.covidimpactontransportapi.models.responses.MonthlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.models.responses.YearlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.IFlightsDataRepository;
+import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,18 +40,12 @@ public class FlightsDataService implements IFlightsDataService {
         for (long dateEpoch = beginDateEpoch + secondsInWeek;
              dateEpoch < endDateEpoch;
              beginDateEpoch = dateEpoch, dateEpoch = Long.min(dateEpoch + secondsInWeek, endDateEpoch)) {
+
             System.out.println("Fetching week: " + week);
-            var uri = URI.create(API_URL +
+            var response = MyHttpClient.get(API_URL +
                     "api/flights/arrival?airport=" + airportCode +
                     "&begin=" + beginDateEpoch +
                     "&end=" + dateEpoch);
-
-            var client = HttpClient.newHttpClient();
-            var request = HttpRequest.newBuilder(uri)
-                    .GET()
-                    .header("accept", "application/json")
-                    .build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("Fetched week: " + week++);
 
             var json = response.body();

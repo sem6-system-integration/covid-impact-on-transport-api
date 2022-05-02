@@ -6,13 +6,10 @@ import com.pollub.covidimpactontransportapi.models.DailyCovidDataDto;
 import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
+import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,13 +26,7 @@ public class CovidDataService implements ICovidDataService {
 
     @Override
     public void fetchCovidDataByCountryCodeToDb(String countryCode) throws IOException, InterruptedException {
-        var uri = URI.create(API_URL + "total/dayone/country/" + countryCode);
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(uri)
-                .GET()
-                .header("accept", "application/json")
-                .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response = MyHttpClient.get(API_URL + "total/dayone/country/" + countryCode);
         var json = response.body();
 
         var objectMapper = new ObjectMapper();

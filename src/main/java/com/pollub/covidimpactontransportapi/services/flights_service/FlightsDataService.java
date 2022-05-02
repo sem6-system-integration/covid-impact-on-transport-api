@@ -61,7 +61,7 @@ public class FlightsDataService implements IFlightsDataService {
             var objectMapper = new ObjectMapper();
             var flights = objectMapper.readValue(json, List.class);
             flightsCount += flights.size();
-            Thread.sleep(50);
+            Thread.sleep(150);
         }
 
         System.out.println("Flights count: " + flightsCount);

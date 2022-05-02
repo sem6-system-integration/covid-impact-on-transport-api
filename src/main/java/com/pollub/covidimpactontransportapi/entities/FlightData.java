@@ -1,6 +1,6 @@
 package com.pollub.covidimpactontransportapi.entities;
 
-import com.pollub.covidimpactontransportapi.entities.id_classes.FlightsDataId;
+import com.pollub.covidimpactontransportapi.entities.id_classes.FlightDataId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 
 @Entity
-@IdClass(FlightsDataId.class)
+@IdClass(FlightDataId.class)
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlightsData {
+public class FlightData {
     @Id
     private String airportCode;
 
@@ -26,5 +26,5 @@ public class FlightsData {
     @Id
     private int month;
 
-    private int flightsCount;
+    private int flightCount;
 }

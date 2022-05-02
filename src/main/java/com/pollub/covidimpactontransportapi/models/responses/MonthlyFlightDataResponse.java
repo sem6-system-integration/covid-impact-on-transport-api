@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearlyFlightsDataResponse {
+public class MonthlyFlightDataResponse {
     private String airportCode;
     private int year;
-    private int flightsCount;
+    private int month;
+    private int flightCount;
 }

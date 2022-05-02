@@ -9,6 +9,7 @@ import java.time.Duration;
 
 public class MyHttpClient {
     public static HttpResponse<String> get(String url) throws IOException, InterruptedException {
+        System.out.println("GET: " + url);
         var uri = URI.create(url);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(uri)

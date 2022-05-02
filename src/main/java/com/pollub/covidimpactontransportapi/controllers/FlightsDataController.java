@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("/api/flights")
+@RequestMapping("/api/flights/airport")
 @PreAuthorize("hasAuthority('USER')")
 public class FlightsDataController {
     private final IFlightsDataService flightsDataService;
@@ -25,7 +25,7 @@ public class FlightsDataController {
         this.flightsDataService = flightsDataService;
     }
 
-    @GetMapping("/airport/{airportCode}/year/{year}/month/{month}")
+    @GetMapping("{airportCode}/year/{year}/month/{month}")
     @Operation(summary = "Get flights count at a given airport in specified year and month.")
     public ResponseEntity<MonthlyFlightsDataResponse> getFlightsCountByAirportCodeInYearInMonth(@PathVariable String airportCode,
                                                                                                 @PathVariable int year,
@@ -34,7 +34,7 @@ public class FlightsDataController {
         return new ResponseEntity<>(flightsDataResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/airport/{airportCode}/year/{year}")
+    @GetMapping("{airportCode}/year/{year}")
     @Operation(summary = "Get flights count at a given airport in specified year.")
     public ResponseEntity<YearlyFlightsDataResponse> getFlightsCountByAirportCodeInYearInMonth(@PathVariable String airportCode,
                                                                                                @PathVariable int year) throws IOException, InterruptedException, ParseException {

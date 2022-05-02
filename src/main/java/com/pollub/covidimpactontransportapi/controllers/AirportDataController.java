@@ -23,7 +23,7 @@ public class AirportDataController {
         this.airportDataService = airportDataService;
     }
 
-    @GetMapping("/country/{countryCode}")
+    @GetMapping("country/{countryCode}")
     @Operation(summary = "Get airports in specified country. Accepts only country code.")
     public ResponseEntity<AirportDataResponse> getAirportsByCountryCode(@PathVariable String countryCode) throws IOException, InterruptedException {
         var airportsResponse = airportDataService.getAirportsByCountryCode(countryCode);

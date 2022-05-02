@@ -1,9 +1,9 @@
 package com.pollub.covidimpactontransportapi.services.country_service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.dto.CountryDto;
-import com.pollub.covidimpactontransportapi.dto.CountryResponse;
 import com.pollub.covidimpactontransportapi.entities.Country;
+import com.pollub.covidimpactontransportapi.models.CountryDto;
+import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICountryRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 @Service
-public class CountryService  implements ICountryService {
+public class CountryService implements ICountryService {
     private final String API_URL = "https://api.covid19api.com/";
     private final ICountryRepository countryRepository;
 
@@ -43,17 +43,6 @@ public class CountryService  implements ICountryService {
                 ).collect(java.util.stream.Collectors.toList());
 
         countryRepository.saveAll(countries);
-    }
-
-    @Override
-    public CountryResponse getCountryByName(String countryName) throws IOException, InterruptedException {
-        countryName = countryName.toUpperCase();
-        var country = countryRepository.findByName(countryName);
-        if (country == null) {
-            fetchCountriesToDb();
-            country = countryRepository.findByName(countryName);
-        }
-        return new CountryResponse(country.getCode(), country.getName());
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.pollub.covidimpactontransportapi.services.airport_service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.dto.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.entities.AirportData;
+import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.IAirportDataRepository;
 import org.springframework.stereotype.Service;
 

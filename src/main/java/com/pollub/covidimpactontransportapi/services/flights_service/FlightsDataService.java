@@ -1,9 +1,9 @@
 package com.pollub.covidimpactontransportapi.services.flights_service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.dto.MonthlyFlightsDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.entities.FlightsData;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyFlightsDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyFlightsDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.IFlightsDataRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,10 +1,10 @@
 package com.pollub.covidimpactontransportapi.services.user_service;
 
-import com.pollub.covidimpactontransportapi.dto.CreateUserRequest;
 import com.pollub.covidimpactontransportapi.entities.AppUser;
 import com.pollub.covidimpactontransportapi.entities.Role;
 import com.pollub.covidimpactontransportapi.exceptions.BadRequestException;
 import com.pollub.covidimpactontransportapi.exceptions.NotFoundException;
+import com.pollub.covidimpactontransportapi.models.requests.CreateUserRequest;
 import com.pollub.covidimpactontransportapi.repositories.IUserRepository;
 import com.pollub.covidimpactontransportapi.services.role_service.IRoleService;
 import org.springframework.security.core.context.SecurityContextHolder;

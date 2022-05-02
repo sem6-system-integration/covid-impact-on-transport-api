@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.dto;
+package com.pollub.covidimpactontransportapi.models.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearlyFlightsDataResponse {
+public class MonthlyFlightsDataResponse {
     private String airportCode;
     private int year;
+    private int month;
     private int flightsCount;
 }

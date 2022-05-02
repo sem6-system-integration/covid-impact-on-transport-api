@@ -1,4 +1,4 @@
-package com.pollub.covidimpactontransportapi.dto;
+package com.pollub.covidimpactontransportapi.models.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

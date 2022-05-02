@@ -1,7 +1,7 @@
 package com.pollub.covidimpactontransportapi.services.flights_service;
 
-import com.pollub.covidimpactontransportapi.dto.MonthlyFlightsDataResponse;
-import com.pollub.covidimpactontransportapi.dto.YearlyFlightsDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyFlightsDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyFlightsDataResponse;
 
 import java.io.IOException;
 import java.text.ParseException;

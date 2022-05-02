@@ -1,7 +1,7 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
 
-import com.pollub.covidimpactontransportapi.dto.CreateUserRequest;
+import com.pollub.covidimpactontransportapi.models.requests.CreateUserRequest;
 import com.pollub.covidimpactontransportapi.services.user_service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;

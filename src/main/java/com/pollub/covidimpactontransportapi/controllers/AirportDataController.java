@@ -1,6 +1,6 @@
 package com.pollub.covidimpactontransportapi.controllers;
 
-import com.pollub.covidimpactontransportapi.dto.AirportDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.services.airport_service.IAirportDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class AirportDataController {
         this.airportDataService = airportDataService;
     }
 
-    @GetMapping("/country/{countryCode}")
+    @GetMapping("country/{countryCode}")
     @Operation(summary = "Get airports in specified country. Accepts only country code.")
     public ResponseEntity<AirportDataResponse> getAirportsByCountryCode(@PathVariable String countryCode) throws IOException, InterruptedException {
         var airportsResponse = airportDataService.getAirportsByCountryCode(countryCode);

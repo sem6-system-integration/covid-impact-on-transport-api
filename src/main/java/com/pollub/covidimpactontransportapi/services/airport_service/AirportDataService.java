@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pollub.covidimpactontransportapi.entities.AirportData;
 import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.IAirportDataRepository;
+import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +24,7 @@ public class AirportDataService implements IAirportDataService {
     }
 
     private void fetchAirportsToDbByCountryCode(String countryCode) throws IOException, InterruptedException {
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(URI.create(API_URL))
-                .GET()
-                .header("accept", "application/json")
-                .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response = MyHttpClient.get(API_URL);
         var json = response.body();
         var objectMapper = new ObjectMapper();
         var airportData = objectMapper.readValue(json, new TypeReference<Map<String, Map<String, String>>>() {

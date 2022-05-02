@@ -5,13 +5,10 @@ import com.pollub.covidimpactontransportapi.entities.Country;
 import com.pollub.covidimpactontransportapi.models.CountryDto;
 import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICountryRepository;
+import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 
 @Service
@@ -24,13 +21,7 @@ public class CountryService implements ICountryService {
     }
 
     private void fetchCountriesToDb() throws IOException, InterruptedException {
-        var uri = URI.create(API_URL + "countries");
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(uri)
-                .GET()
-                .header("accept", "application/json")
-                .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response = MyHttpClient.get(API_URL + "countries");
         var json = response.body();
 
         var mapper = new ObjectMapper();

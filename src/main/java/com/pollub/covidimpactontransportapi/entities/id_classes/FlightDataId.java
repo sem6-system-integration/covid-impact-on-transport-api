@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class FlightsDataId implements Serializable {
+public class FlightDataId implements Serializable {
     private String airportCode;
     private int year;
     private int month;

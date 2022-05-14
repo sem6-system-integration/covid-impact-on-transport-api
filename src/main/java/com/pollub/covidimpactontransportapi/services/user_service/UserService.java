@@ -58,6 +58,13 @@ public class UserService implements IUserService, UserDetailsService {
 
         Role userRole = roleService.getRoleByName("USER");
         user.addRole(userRole);
+
+        Role requestedRole = roleService.getRoleByName(request.getAccountType());
+        if (requestedRole == null) {
+            throw new BadRequestException("Role with specified name does not exist");
+        }
+        user.addRole(requestedRole);
+
         return userRepository.save(user);
     }
 

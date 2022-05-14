@@ -13,4 +13,6 @@ public class CreateUserRequest {
 
     @Size(min = 6, max = 16, message = "length must be between 6 and 16")
     private String password;
+
+    private String accountType;
 }

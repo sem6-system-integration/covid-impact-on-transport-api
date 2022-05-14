@@ -3,8 +3,10 @@ package com.pollub.covidimpactontransportapi.services.covid_service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pollub.covidimpactontransportapi.entities.CovidData;
 import com.pollub.covidimpactontransportapi.models.DailyCovidDataDto;
-import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDataResponse;
-import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDataResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidCasesResponse;
+import com.pollub.covidimpactontransportapi.models.responses.MonthlyCovidDeathsResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidCasesResponse;
+import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDeathsResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public void fetchCovidDataByCountryCodeToDb(String countryCode) throws IOException, InterruptedException {
+    public void fetchCovidCasesByCountryCodeToDb(String countryCode) throws IOException, InterruptedException {
         var response = MyHttpClient.get(API_URL + "total/dayone/country/" + countryCode);
         var json = response.body();
 
@@ -59,27 +61,50 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
-    public YearlyCovidDataResponse getCovidDataByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
-        fetchCovidDataByCountryCodeToDb(countryCode);
+    public YearlyCovidCasesResponse getCovidCasesByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
+        fetchCovidCasesByCountryCodeToDb(countryCode);
 
         var covidDataList = covidDataRepository.findAllByCountryCodeAndYear(countryCode, year);
         if (covidDataList == null || covidDataList.isEmpty()) {
-            return new YearlyCovidDataResponse(year, 0L, 0L);
+            return new YearlyCovidCasesResponse(year, 0L);
         }
 
         var confirmed = covidDataList.stream().mapToLong(CovidData::getConfirmed).sum();
-        var deaths = covidDataList.stream().mapToLong(CovidData::getDeaths).sum();
-        return new YearlyCovidDataResponse(year, confirmed, deaths);
+        return new YearlyCovidCasesResponse(year, confirmed);
     }
 
     @Override
-    public MonthlyCovidDataResponse getCovidDataByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
-        fetchCovidDataByCountryCodeToDb(countryCode);
+    public MonthlyCovidCasesResponse getCovidCasesByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
+        fetchCovidCasesByCountryCodeToDb(countryCode);
 
         var covidData = covidDataRepository.findFirstByCountryCodeAndYearAndMonth(countryCode, year, month);
         if (covidData == null)
-            return new MonthlyCovidDataResponse(year, month, 0L, 0L);
+            return new MonthlyCovidCasesResponse(year, month, 0L);
 
-        return new MonthlyCovidDataResponse(year, month, covidData.getConfirmed(), covidData.getDeaths());
+        return new MonthlyCovidCasesResponse(year, month, covidData.getConfirmed());
     }
+
+    @Override
+    public YearlyCovidDeathsResponse getCovidDeathsByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
+        fetchCovidCasesByCountryCodeToDb(countryCode);
+
+        var covidDataList = covidDataRepository.findAllByCountryCodeAndYear(countryCode, year);
+        if (covidDataList == null || covidDataList.isEmpty()) {
+            return new YearlyCovidDeathsResponse(year, 0L);
+        }
+
+        var deaths = covidDataList.stream().mapToLong(CovidData::getDeaths).sum();
+        return new YearlyCovidDeathsResponse(year, deaths);
+    }
+    @Override
+    public MonthlyCovidDeathsResponse getCovidDeathsByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
+        fetchCovidCasesByCountryCodeToDb(countryCode);
+
+        var covidData = covidDataRepository.findFirstByCountryCodeAndYearAndMonth(countryCode, year, month);
+        if (covidData == null)
+            return new MonthlyCovidDeathsResponse(year, month, 0L);
+
+        return new MonthlyCovidDeathsResponse(year, month, covidData.getDeaths());
+    }
+
 }

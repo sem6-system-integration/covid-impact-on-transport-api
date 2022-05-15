@@ -65,6 +65,8 @@ public class DatabaseSeeder implements ApplicationRunner {
         if (userRepository.findByUsername("standard").isEmpty()) {
             var encodedPassword = passwordEncoder.encode("standard");
             AppUser standardUser = new AppUser("standard", encodedPassword);
+            Role userRole = roleRepository.findByName("USER");
+            standardUser.addRole(userRole);
             Role standardRole = roleRepository.findByName("STANDARD");
             standardUser.addRole(standardRole);
             userRepository.saveAndFlush(standardUser);
@@ -73,6 +75,8 @@ public class DatabaseSeeder implements ApplicationRunner {
         if (userRepository.findByUsername("premium").isEmpty()) {
             var encodedPassword = passwordEncoder.encode("premium");
             AppUser premiumUser = new AppUser("premium", encodedPassword);
+            Role userRole = roleRepository.findByName("USER");
+            premiumUser.addRole(userRole);
             Role premiumRole = roleRepository.findByName("PREMIUM");
             premiumUser.addRole(premiumRole);
             userRepository.saveAndFlush(premiumUser);

@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MonthlyCovidDataResponse {
+public class MonthlyCovidDeathsResponse {
     private Integer year;
     private Integer month;
-    private Long confirmed;
     private Long deaths;
 }

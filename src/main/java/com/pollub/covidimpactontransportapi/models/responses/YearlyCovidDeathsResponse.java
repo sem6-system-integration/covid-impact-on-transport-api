@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearlyCovidDataResponse {
+public class YearlyCovidDeathsResponse {
     private Integer year;
-    private Long confirmed;
     private Long deaths;
 }

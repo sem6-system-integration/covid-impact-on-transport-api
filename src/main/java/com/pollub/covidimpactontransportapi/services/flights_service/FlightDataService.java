@@ -7,6 +7,8 @@ import com.pollub.covidimpactontransportapi.models.responses.YearlyFlightDataRes
 import com.pollub.covidimpactontransportapi.repositories.IFlightDataRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -60,6 +62,7 @@ public class FlightDataService implements IFlightDataService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public MonthlyFlightDataResponse getFlightDataByAirportCodeInYearAndInMonth(String airportCode, int year, int month) throws IOException, InterruptedException, ParseException {
         airportCode = airportCode.toUpperCase();
         var flightData = flightDataRepository.findByAirportCodeAndYearAndMonth(airportCode, year, month);

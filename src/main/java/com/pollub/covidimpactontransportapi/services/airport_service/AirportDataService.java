@@ -7,6 +7,8 @@ import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse
 import com.pollub.covidimpactontransportapi.repositories.IAirportDataRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class AirportDataService implements IAirportDataService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public AirportDataResponse getAirportsByCountryCode(String countryCode) throws IOException, InterruptedException {
         List<AirportData> airports = airportDataRepository.findAllByCountryCode(countryCode);
         if (airports.isEmpty()) {

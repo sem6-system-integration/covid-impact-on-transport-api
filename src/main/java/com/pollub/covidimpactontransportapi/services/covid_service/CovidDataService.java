@@ -10,6 +10,8 @@ import com.pollub.covidimpactontransportapi.models.responses.YearlyCovidDeathsRe
 import com.pollub.covidimpactontransportapi.repositories.ICovidDataRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +63,7 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public YearlyCovidCasesResponse getCovidCasesByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
         fetchCovidCasesByCountryCodeToDb(countryCode);
 
@@ -74,6 +77,7 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public MonthlyCovidCasesResponse getCovidCasesByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
         fetchCovidCasesByCountryCodeToDb(countryCode);
 
@@ -85,6 +89,7 @@ public class CovidDataService implements ICovidDataService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public YearlyCovidDeathsResponse getCovidDeathsByCountryCodeInYear(String countryCode, int year) throws IOException, InterruptedException {
         fetchCovidCasesByCountryCodeToDb(countryCode);
 
@@ -97,6 +102,7 @@ public class CovidDataService implements ICovidDataService {
         return new YearlyCovidDeathsResponse(year, deaths);
     }
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public MonthlyCovidDeathsResponse getCovidDeathsByCountryCodeInMonthAndInYear(String countryCode, int year, int month) throws IOException, InterruptedException {
         fetchCovidCasesByCountryCodeToDb(countryCode);
 

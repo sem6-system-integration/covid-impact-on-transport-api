@@ -7,6 +7,8 @@ import com.pollub.covidimpactontransportapi.models.responses.CountryResponse;
 import com.pollub.covidimpactontransportapi.repositories.ICountryRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +39,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CountryResponse getCountryByCode(String countryCode) throws IOException, InterruptedException {
         countryCode = countryCode.toUpperCase();
         var country = countryRepository.findByCode(countryCode);
@@ -48,6 +51,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<CountryResponse> getAllCountries() throws IOException, InterruptedException {
         var countries = countryRepository.findAllByOrderByName();
         if (countries.isEmpty()) {

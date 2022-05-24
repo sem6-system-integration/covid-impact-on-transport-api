@@ -13,8 +13,10 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AirportData {
+public class Airport {
     @Id
     private String icao;
     private String countryCode;
+    private String name;
+    private String city;
 }

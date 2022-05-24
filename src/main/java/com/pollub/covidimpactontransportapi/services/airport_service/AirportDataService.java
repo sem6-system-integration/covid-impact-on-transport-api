@@ -2,7 +2,8 @@ package com.pollub.covidimpactontransportapi.services.airport_service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pollub.covidimpactontransportapi.entities.AirportData;
+import com.pollub.covidimpactontransportapi.entities.Airport;
+import com.pollub.covidimpactontransportapi.models.AirportDto;
 import com.pollub.covidimpactontransportapi.models.responses.AirportDataResponse;
 import com.pollub.covidimpactontransportapi.repositories.IAirportDataRepository;
 import com.pollub.covidimpactontransportapi.utils.MyHttpClient;
@@ -32,10 +33,10 @@ public class AirportDataService implements IAirportDataService {
         var airportData = objectMapper.readValue(json, new TypeReference<Map<String, Map<String, String>>>() {
         }).values();
 
-        var airports = new ArrayList<AirportData>();
+        var airports = new ArrayList<Airport>();
         for (Map<String, String> entry : airportData) {
             if (entry.get("country").equals(countryCode)) {
-                var airport = new AirportData(entry.get("icao"), entry.get("country"));
+                var airport = new Airport(entry.get("icao"), entry.get("country"), entry.get("name"), entry.get("city"));
                 airports.add(airport);
             }
         }
@@ -46,13 +47,15 @@ public class AirportDataService implements IAirportDataService {
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public AirportDataResponse getAirportsByCountryCode(String countryCode) throws IOException, InterruptedException {
-        List<AirportData> airports = airportDataRepository.findAllByCountryCode(countryCode);
+        List<Airport> airports = airportDataRepository.findAllByCountryCode(countryCode);
         if (airports.isEmpty()) {
             fetchAirportsToDbByCountryCode(countryCode);
             airports = airportDataRepository.findAllByCountryCode(countryCode);
         }
 
-        List<String> icaoList = airports.stream().map(AirportData::getIcao).collect(Collectors.toList());
-        return new AirportDataResponse(countryCode, icaoList);
+        List<AirportDto> airportDtos = airports.stream().map(
+                airport -> new AirportDto(airport.getIcao(), airport.getCountryCode(), airport.getName(), airport.getCity())
+        ).collect(Collectors.toList());
+        return new AirportDataResponse(countryCode, airportDtos);
     }
 }

@@ -36,19 +36,21 @@ public class FlightDataService implements IFlightDataService {
         // cap end date to current date
         endDateEpoch = Long.min(endDateEpoch, System.currentTimeMillis() / 1000);
 
-        final var secondsInWeek = 604800;
+        final var SECONDS_IN_WEEK = 604_800;
         var flightCount = 0;
         var week = 1;
-        for (long dateEpoch = beginDateEpoch + secondsInWeek;
-             dateEpoch < endDateEpoch;
-             beginDateEpoch = dateEpoch, dateEpoch = Long.min(dateEpoch + secondsInWeek, endDateEpoch)) {
+        var weeks = (int) ((endDateEpoch - beginDateEpoch) / SECONDS_IN_WEEK) + 1;
+        for (long dateEpoch = beginDateEpoch + SECONDS_IN_WEEK;
+             beginDateEpoch != endDateEpoch;
+             beginDateEpoch = dateEpoch, dateEpoch = Long.min(dateEpoch + SECONDS_IN_WEEK, endDateEpoch)) {
 
-            System.out.println("Fetching week: " + week);
+            System.out.println("Fetching week: " + week + '/' + weeks);
             var response = MyHttpClient.get(API_URL +
                     "api/flights/arrival?airport=" + airportCode +
                     "&begin=" + beginDateEpoch +
                     "&end=" + dateEpoch);
-            System.out.println("Fetched week: " + week++);
+            System.out.println("Fetched week: " + week + '/' + weeks);
+            week++;
 
             var json = response.body();
             var objectMapper = new ObjectMapper();

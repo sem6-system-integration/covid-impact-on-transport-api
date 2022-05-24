@@ -16,10 +16,10 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/airports")
 @PreAuthorize("hasAuthority('USER')")
-public class AirportDataController {
+public class AirportController {
     private final IAirportDataService airportDataService;
 
-    public AirportDataController(IAirportDataService airportDataService) {
+    public AirportController(IAirportDataService airportDataService) {
         this.airportDataService = airportDataService;
     }
 

@@ -17,7 +17,7 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/flights/airport")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('STANDARD')")
 public class FlightDataController {
     private final IFlightDataService flightDataService;
 

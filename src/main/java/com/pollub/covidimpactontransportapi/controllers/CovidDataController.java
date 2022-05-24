@@ -19,7 +19,7 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/covid")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('STANDARD')")
 public class CovidDataController {
     private final ICovidDataService covidDataService;
 

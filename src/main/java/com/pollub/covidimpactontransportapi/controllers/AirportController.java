@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/airports")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('STANDARD')")
 public class AirportController {
     private final IAirportDataService airportDataService;
 

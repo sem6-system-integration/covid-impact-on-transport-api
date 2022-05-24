@@ -56,7 +56,7 @@ public class UserService implements IUserService, UserDetailsService {
         user.setUsername(request.getUsername());
         user.setPassword(encodedPassword);
 
-        Role userRole = roleService.getRoleByName("USER");
+        Role userRole = roleService.getRoleByName("STANDARD");
         user.addRole(userRole);
 
         Role requestedRole = roleService.getRoleByName(request.getAccountType());

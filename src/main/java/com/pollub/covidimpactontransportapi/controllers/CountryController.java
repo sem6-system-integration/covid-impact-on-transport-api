@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/countries")
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('STANDARD')")
 public class CountryController {
     private final ICountryService countryService;
 

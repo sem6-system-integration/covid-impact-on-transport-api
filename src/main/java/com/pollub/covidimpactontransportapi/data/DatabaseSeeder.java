@@ -36,10 +36,6 @@ public class DatabaseSeeder implements ApplicationRunner {
             Role adminRole = new Role("ADMIN");
             roleRepository.save(adminRole);
         }
-        if (roleRepository.findByName("USER") == null) {
-            Role userRole = new Role("USER");
-            roleRepository.save(userRole);
-        }
         if (roleRepository.findByName("STANDARD") == null) {
             Role userRole = new Role("STANDARD");
             roleRepository.save(userRole);
@@ -56,8 +52,10 @@ public class DatabaseSeeder implements ApplicationRunner {
             return;
         var encodedPassword = passwordEncoder.encode("admin");
         AppUser admin = new AppUser("admin", encodedPassword);
+
         Role adminRole = roleRepository.findByName("ADMIN");
         admin.addRole(adminRole);
+
         userRepository.saveAndFlush(admin);
     }
 
@@ -65,20 +63,22 @@ public class DatabaseSeeder implements ApplicationRunner {
         if (userRepository.findByUsername("standard").isEmpty()) {
             var encodedPassword = passwordEncoder.encode("standard");
             AppUser standardUser = new AppUser("standard", encodedPassword);
-            Role userRole = roleRepository.findByName("USER");
-            standardUser.addRole(userRole);
+
             Role standardRole = roleRepository.findByName("STANDARD");
             standardUser.addRole(standardRole);
+
             userRepository.saveAndFlush(standardUser);
         }
 
         if (userRepository.findByUsername("premium").isEmpty()) {
             var encodedPassword = passwordEncoder.encode("premium");
             AppUser premiumUser = new AppUser("premium", encodedPassword);
-            Role userRole = roleRepository.findByName("USER");
-            premiumUser.addRole(userRole);
+
+            Role standardRole = roleRepository.findByName("STANDARD");
+            premiumUser.addRole(standardRole);
             Role premiumRole = roleRepository.findByName("PREMIUM");
             premiumUser.addRole(premiumRole);
+
             userRepository.saveAndFlush(premiumUser);
         }
     }

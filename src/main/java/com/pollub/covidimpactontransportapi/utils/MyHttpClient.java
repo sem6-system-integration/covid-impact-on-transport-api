@@ -15,7 +15,7 @@ public class MyHttpClient {
         var request = HttpRequest.newBuilder(uri)
                 .GET()
                 .header("accept", "application/json")
-                .timeout(Duration.ofSeconds(15))
+                .timeout(Duration.ofSeconds(30))
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
